@@ -1,7 +1,7 @@
 ﻿param (
-    [Parameter(Mandatory=$true)][string]$url,
-    [Parameter(Mandatory=$true)][string]$name,
-    [Parameter(Mandatory=$false)][string]$dir=(Join-Path "$PSScriptRoot" "downloadMp4FromM3u8")
+    [Parameter(Mandatory=$true, HelpMessage=".m3u8 URL of the stream to download")][string]$url,
+    [Parameter(Mandatory=$true, HelpMessage="Output filename (not including .mp4 extension)")][string]$name,
+    [Parameter(Mandatory=$false, HelpMessage="Output directory of the downloaded .mp4")][string]$dir=(Join-Path "$PSScriptRoot" "downloadMp4FromM3u8")
 )
 
 [string]$OUTPUT_DIR = "$dir"
