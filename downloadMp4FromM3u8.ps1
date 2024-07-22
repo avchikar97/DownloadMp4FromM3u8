@@ -1,18 +1,30 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$url,
     [Parameter(Mandatory=$true)][string]$name,
-    [Parameter(Mandatory=$false)][string]$dir="D:\downloadMp4FromM3u8"
+    [Parameter(Mandatory=$false)][string]$dir=(Join-Path "$PSScriptRoot" "downloadMp4FromM3u8")
 )
 
 [string]$OUTPUT_DIR = "$dir"
-[string]$OUTPUT_PATH = "$OUTPUT_DIR\$name.mp4"
+[string]$OUTPUT_PATH = (Join-Path "$OUTPUT_DIR" "$name.mp4")
 
-If(!(Test-Path -PathType container $OUTPUT_DIR))
-{
-      New-Item -Force -ItemType Directory -Path $OUTPUT_DIR
+if (Get-Command "ffmpeg.exe" -ErrorAction SilentlyContinue){
+    If(!(Test-Path -PathType container $OUTPUT_DIR))
+    {
+        New-Item -Force -ItemType Directory -Path $OUTPUT_DIR
+    }
+
+    ffmpeg -i "$url" -c copy -bsf:a aac_adtstoasc $OUTPUT_PATH
+
+    Write-Host 
+    Write-Host "Output file is in $OUTPUT_PATH"
+
+    if($IsLinux){
+        xdg-open $dir
+    }
+    elseif($IsWindows){
+        explorer $dir
+    }
 }
-
-ffmpeg -i "$url" -c copy -bsf:a aac_adtstoasc $OUTPUT_PATH
-
-Write-Host 
-Write-Host Output file is in $OUTPUT_PATH
+else{
+    Write-Host "ERROR: ffmpeg is not installed. Please see https://www.ffmpeg.org/download.html to install ffmpeg before proceeding."
+}
