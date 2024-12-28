@@ -5,13 +5,12 @@
     [Parameter(Mandatory=$false, HelpMessage="Output directory of the downloaded .mp4")][string]$Dir=(Join-Path "$PSScriptRoot" "downloadMp4FromM3u8")
 )
 
-[string]$OUTPUT_DIR = "$Dir"
-[string]$OUTPUT_PATH = (Join-Path $OUTPUT_DIR "$($Name).mp4")
+[string]$OUTPUT_PATH = (Join-Path $Dir "$($Name).mp4")
 
 if (Get-Command "ffmpeg.exe" -ErrorAction SilentlyContinue){
-    If(!(Test-Path -PathType container $OUTPUT_DIR))
+    If(!(Test-Path -PathType container $Dir))
     {
-        New-Item -Force -ItemType Directory -Path $OUTPUT_DIR
+        New-Item -Force -ItemType Directory -Path $Dir
     }
 
     if($SameAsSource){
@@ -21,14 +20,13 @@ if (Get-Command "ffmpeg.exe" -ErrorAction SilentlyContinue){
         ffmpeg -i $Url -c:v libx265 -c:a copy -c:s copy $OUTPUT_PATH
     }
 
-    Write-Host 
-    Write-Host "Output file is $OUTPUT_PATH"
+    Write-Host "`nOutput file is $OUTPUT_PATH"
 
     if($IsLinux){
-        xdg-open $OUTPUT_DIR
+        xdg-open $Dir
     }
     elseif($IsWindows){
-        explorer $OUTPUT_DIR
+        explorer $Dir
     }
 }
 else{
