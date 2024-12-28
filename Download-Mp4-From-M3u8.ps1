@@ -13,7 +13,7 @@ if (Get-Command "ffmpeg.exe" -ErrorAction SilentlyContinue){
         New-Item -Force -ItemType Directory -Path $OUTPUT_DIR
     }
 
-    ffmpeg -i "$url" -c copy -bsf:a aac_adtstoasc $OUTPUT_PATH
+    ffmpeg -i "$url" -c:v libx265 -c:a copy -c:s copy $OUTPUT_PATH
 
     Write-Host 
     Write-Host "Output file is in $OUTPUT_PATH"
